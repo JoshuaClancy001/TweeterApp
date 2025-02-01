@@ -1,5 +1,3 @@
-import {useState} from "react";
-
 interface Props {
     originalUrl?: string;
     onKeyDown?: (e: React.KeyboardEvent<HTMLElement>) => void;

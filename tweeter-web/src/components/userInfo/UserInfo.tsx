@@ -1,5 +1,5 @@
 import "./UserInfo.css";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { AuthToken, User } from "tweeter-shared";
 import useToastListener from "../toaster/ToastListenerHook";
@@ -39,19 +39,19 @@ const UserInfo = () => {
   const [presenter] = useState(new UserInfoPresenter(listener))
 
 
-  const setIsFollowerStatus = (authToken: AuthToken,currentUser:User,displayedUser:User )=>{
-    presenter.setIsFollowerStatus(authToken,currentUser,displayedUser,isFollower);
+  const setIsFollowerStatus = async (authToken: AuthToken,currentUser:User,displayedUser:User )=>{
+    await presenter.setIsFollowerStatus(authToken, currentUser, displayedUser, isFollower);
   }
 
-  const setNumbFollowees = (authToken: AuthToken,currentUser:User) => {
-    presenter.setNumbFollowees(authToken,displayedUser!,followeeCount)
+  const setNumbFollowees = async (authToken: AuthToken,currentUser:User) => {
+    await presenter.setNumbFollowees(authToken, displayedUser!, followeeCount)
   }
 
-  const setNumbFollowers = (authToken: AuthToken, currentUser: User) => {
-    presenter.setNumbFollowers(authToken!,displayedUser!,followerCount)
+  const setNumbFollowers = async (authToken: AuthToken, currentUser: User) => {
+    await presenter.setNumbFollowers(authToken!, displayedUser!, followerCount)
   }
 
-  const switchToLoggedInUser = (event: React.MouseEvent): void => {
+  const switchToLoggedInUser = async (event: React.MouseEvent) => {
     event.preventDefault();
     setDisplayedUser(currentUser!);
   };
@@ -60,14 +60,14 @@ const UserInfo = () => {
       event: React.MouseEvent
   ): Promise<void> => {
     event.preventDefault();
-    presenter.followDisplayedUser(currentUser!,authToken!,displayedUser!,setIsLoading,setIsFollower,setFollowerCount,setFolloweeCount)
+    await presenter.followDisplayedUser(currentUser!, authToken!, displayedUser!, setIsLoading, setIsFollower, setFollowerCount, setFolloweeCount)
   };
 
   const unfollowDisplayedUser = async (
     event: React.MouseEvent
   ): Promise<void> => {
     event.preventDefault();
-    presenter.unfollowDisplayedUser(authToken!,setIsLoading,displayedUser!,setIsFollower)
+    await presenter.unfollowDisplayedUser(authToken!, setIsLoading, displayedUser!, setIsFollower)
   };
   return (
     <div className={isLoading ? "loading" : ""}>

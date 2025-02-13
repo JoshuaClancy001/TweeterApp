@@ -3,11 +3,11 @@ import "bootstrap/dist/css/bootstrap.css";
 import { ChangeEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthenticationFormLayout from "../AuthenticationFormLayout";
-import { AuthToken, FakeData, User } from "tweeter-shared";
 import { Buffer } from "buffer";
 import useToastListener from "../../toaster/ToastListenerHook";
 import AuthenticationFields from "../AuthenticationFields";
 import useInfo from "../../userInfo/UserInfoHook";
+import {RegisterPresenter, RegisterView} from "../../../presenters/RegisterPresenter";
 
 const Register = () => {
   const [firstName, setFirstName] = useState("");
@@ -40,6 +40,10 @@ const Register = () => {
       doRegister();
     }
   };
+
+  const doRegister = () => {
+    presenter.doRegister(isLoading,firstName,lastName,alias,password,imageBytes,imageFileExtension,navigate,rememberMe,updateUserInfo)
+  }
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -80,52 +84,6 @@ const Register = () => {
 
   const getFileExtension = (file: File): string | undefined => {
     return file.name.split(".").pop();
-  };
-
-  const doRegister = async () => {
-    try {
-      setIsLoading(true);
-
-      const [user, authToken] = await register(
-        firstName,
-        lastName,
-        alias,
-        password,
-        imageBytes,
-        imageFileExtension
-      );
-
-      updateUserInfo(user, user, authToken, rememberMe);
-      navigate("/");
-    } catch (error) {
-      displayErrorMessage(
-        `Failed to register user because of exception: ${error}`
-      );
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const register = async (
-    firstName: string,
-    lastName: string,
-    alias: string,
-    password: string,
-    userImageBytes: Uint8Array,
-    imageFileExtension: string
-  ): Promise<[User, AuthToken]> => {
-    // Not neded now, but will be needed when you make the request to the server in milestone 3
-    const imageStringBase64: string =
-      Buffer.from(userImageBytes).toString("base64");
-
-    // TODO: Replace with the result of calling the server
-    const user = FakeData.instance.firstUser;
-
-    if (user === null) {
-      throw new Error("Invalid registration");
-    }
-
-    return [user, FakeData.instance.authToken];
   };
 
   const inputFieldGenerator = () => {
@@ -182,6 +140,12 @@ const Register = () => {
       </div>
     );
   };
+
+  const listener :RegisterView = {
+    displayErrorMessage: displayErrorMessage
+  }
+
+  const[presenter] = useState(new RegisterPresenter(listener))
 
   return (
     <AuthenticationFormLayout

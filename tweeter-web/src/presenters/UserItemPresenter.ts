@@ -1,17 +1,15 @@
-import {AuthToken, User} from "tweeter-shared";
-import {Presenter, View} from "./Presenter";
-import {ItemPresenter} from "./ItemPresenter";
+import {User} from "tweeter-shared";
+import {View} from "./Presenter";
+import {ItemPresenter, ItemView} from "./ItemPresenter";
+import {FollowService} from "../model/service/FollowService";
+import UserItem from "../components/userItem/UserItem";
 
-export interface UserItemView extends View{
-    addItems: (newItems: User[]) => void
-}
+export interface UserItemView extends ItemView<UserItemView, User>{}
 
-export abstract class UserItemPresenter extends ItemPresenter<UserItemView, User> {
+export abstract class UserItemPresenter extends ItemPresenter<UserItemView, User, FollowService> {
 
-
-
-    protected constructor(view: UserItemView) {
-        super(view)
+    protected createService(): FollowService {
+        return new FollowService();
     }
 
 }

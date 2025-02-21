@@ -1,10 +1,33 @@
 import {Presenter, View} from "./Presenter";
-import {AuthToken, Status} from "tweeter-shared";
-import {StatusItemView} from "./StatusItemPresenter";
+import {AuthToken} from "tweeter-shared";
 
-export abstract class ItemPresenter<T extends View, U> extends Presenter<T>{
+
+export const PAGE_SIZE = 10;
+
+export interface ItemView<T, U> extends View{
+    addItems: (newItems: U[]) => void
+}
+
+export abstract class ItemPresenter<T extends ItemView<T,U>, U, V> extends Presenter<T>{
+    private _service: V;
     private _hasMoreItems = true;
     private _lastItem: U | null = null;
+
+
+    public constructor(view: T) {
+        super(view)
+        this._service = this.createService();
+    }
+
+    protected abstract createService(): V;
+
+    protected get service(){
+        return this._service;
+    }
+
+    protected get view():T{
+        return super.view
+    }
 
     get hasMoreItems(){
         return this._hasMoreItems;
@@ -23,5 +46,22 @@ export abstract class ItemPresenter<T extends View, U> extends Presenter<T>{
         this._hasMoreItems = true;
     }
 
-    public abstract loadMoreItems(authToken: AuthToken, userAlias: string): void;
+    public async loadMoreItems(authToken: AuthToken, userAlias: string ){
+        await this.doFailureReportingOperation(this.getItemDescription(), async () => {
+            const [newItems, hasMore] = await this.getMoreItems(
+                authToken!,
+                userAlias,
+            );
+
+            this.hasMoreItems = hasMore;
+            this.lastItem = newItems[newItems.length - 1];
+            this.view.addItems(newItems);
+        });
+    };
+
+    protected abstract getItemDescription(): string;
+
+    protected abstract getMoreItems(authToken: AuthToken, userAlias: string): Promise<[U[], boolean]>
+
+
 }

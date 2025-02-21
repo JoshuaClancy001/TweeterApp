@@ -19,6 +19,10 @@ import {FollowerPresenter} from "./presenters/FollowerPresenter";
 import {StatusItemView} from "./presenters/StatusItemPresenter";
 import { FeedPresenter } from "./presenters/FeedPresenter";
 import {StoryPresenter} from "./presenters/StoryPresenter";
+import ItemScroller from "./components/mainLayout/ItemScroller";
+import {Status, User} from "tweeter-shared";
+import StatusItem from "./components/statusItem/StatusItem";
+import UserItem from "./components/userItem/UserItem";
 
 const App = () => {
   const { currentUser, authToken } = useInfo()
@@ -50,36 +54,40 @@ const AuthenticatedRoutes = () => {
         <Route
             path="feed"
             element={
-            <StatusItemScroller
-                key={1}
-                presenterGenerator={(view: StatusItemView) => new FeedPresenter(view)}
-            />
+                <ItemScroller
+                    key={1}
+                    presenterGenerator={(view: StatusItemView) => new FeedPresenter(view)}
+                    itemComponentGenerator={(item: Status) => <StatusItem status={item} />}
+                />
         }
         />
         <Route
             path="story"
             element={
-            <StatusItemScroller
+            <ItemScroller
                 key={2}
                 presenterGenerator={(view: StatusItemView) => new StoryPresenter(view)}
+                itemComponentGenerator={(item: Status) => <StatusItem status={item} />}
             />
         }
         />
         <Route
           path="followees"
           element={
-            <UserItemScroller
+            <ItemScroller
               key={1}
               presenterGenerator={(view: UserItemView) => new FolloweePresenter(view)}
+                itemComponentGenerator={(item:User) => <UserItem value={item} />}
             />
           }
         />
         <Route
           path="followers"
           element={
-            <UserItemScroller
+            <ItemScroller
               key={2}
               presenterGenerator={(view: UserItemView) => new FollowerPresenter(view)}
+              itemComponentGenerator={(item:User) => <UserItem value={item} />}
             />
           }
         />

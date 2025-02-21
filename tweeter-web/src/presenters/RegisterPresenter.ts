@@ -3,10 +3,12 @@ import {NavigateFunction} from "react-router-dom";
 import {AuthToken, User} from "tweeter-shared";
 import {Buffer} from "buffer";
 import {Presenter, View} from "./Presenter";
+import {AuthenticationPresenter} from "./AuthenticationPresenter";
+import {LoginView} from "./LoginPresenter";
 
 export interface RegisterView extends View{}
 
-export class RegisterPresenter extends Presenter<RegisterView>{
+export class RegisterPresenter extends AuthenticationPresenter<LoginView>{
     private userService: UserService
     private isLoading
 
@@ -16,46 +18,22 @@ export class RegisterPresenter extends Presenter<RegisterView>{
         this.isLoading = true;
     }
 
-    public async doRegister(
-        isLoading: boolean,
-        firstName: string,
-        lastName: string,
-        alias: string,
-        password: string,
-        imageBytes: Uint8Array,
-        imageFileExtension: string,
-        navigate: NavigateFunction,
-        rememberMe: boolean,
-        updateUserInfo: (
-            currentUser: User,
-            displayedUser: User | null,
-            authToken: AuthToken,
-            remember: boolean
-        ) => void){
-        await this.doFailureReportingOperation("register user", async () => {
-            isLoading = true;
-
-            const [user, authToken] = await this.userService.register(
-                firstName,
-                lastName,
-                alias,
-                password,
-                imageBytes,
-                imageFileExtension
-            );
-
-            updateUserInfo(user, user, authToken, rememberMe);
-            navigate("/");
-        });
+    public async doRegister(isLoading: boolean, firstName: string, lastName: string, alias: string, password: string, imageBytes: Uint8Array, imageFileExtension: string, navigate: NavigateFunction, rememberMe: boolean, updateUserInfo: (currentUser: User, displayedUser: User | null, authToken: AuthToken, remember: boolean) => void){
+        await this.doAuthentication(async () => {
+            return await this.userService.register(firstName, lastName, alias, password, imageBytes, imageFileExtension);
+        }, isLoading, () => {
+            this.doTheNavigating(navigate);
+        }, rememberMe, navigate, updateUserInfo);
         isLoading = false;
     }
 
-    public async handleImageFile(
-        file: File | undefined,
-        setImageUrl: (url: string) => void,
-        setImageBytes: (bytes: Uint8Array) => void,
-        setImageFileExtension: (extension: string) => void
-        ){
+    public doTheNavigating(navigate: NavigateFunction): void {
+            navigate("/");
+    }
+
+
+
+    public async handleImageFile(file: File | undefined, setImageUrl: (url: string) => void, setImageBytes: (bytes: Uint8Array) => void, setImageFileExtension: (extension: string) => void){
         if (file) {
             setImageUrl(URL.createObjectURL(file));
 

@@ -1,15 +1,14 @@
 import {AuthToken, Status} from "tweeter-shared";
 import {Presenter, View} from "./Presenter";
-import {ItemPresenter} from "./ItemPresenter";
+import {ItemPresenter, ItemView} from "./ItemPresenter";
+import {StatusService} from "../model/service/StatusService";
 
-export interface StatusItemView extends View {
-    addItems: (newItems: Status[]) => void
-}
+export interface StatusItemView extends ItemView<StatusItemView, Status> {}
 
-export abstract class StatusItemPresenter extends ItemPresenter<StatusItemView, Status> {
+export abstract class StatusItemPresenter extends ItemPresenter<StatusItemView, Status, StatusService> {
 
-    protected constructor(view: StatusItemView) {
-        super(view)
+    protected createService(): StatusService {
+        return new StatusService();
     }
 
 

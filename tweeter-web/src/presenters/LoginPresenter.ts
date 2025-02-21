@@ -21,7 +21,7 @@ export class LoginPresenter extends Presenter<LoginView>{
                              remember: boolean
                          ) => void
     ): Promise<void> {
-        try {
+        await this.doFailureReportingOperation("log user in", async () => {
             isLoading = true;
 
             const [user, authToken] = await this.userService.login(alias, password);
@@ -33,12 +33,6 @@ export class LoginPresenter extends Presenter<LoginView>{
             } else {
                 navigate("/");
             }
-        } catch (error) {
-            this.view.displayErrorMessage(
-                `Failed to log user in because of exception: ${error}`
-            );
-        } finally {
-            isLoading = false;
-        }
+        });
     };
 }

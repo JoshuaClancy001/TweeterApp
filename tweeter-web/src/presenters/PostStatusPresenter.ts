@@ -21,7 +21,7 @@ export class PostStatusPresenter extends Presenter<PostStatusView>{
         authToken: AuthToken,
 
     ): Promise<void> {
-        try {
+        await this.doFailureReportingOperation("post status", async () => {
             setIsLoading(true);
             this.view.displayInfoMessage("Posting status...", 0);
 
@@ -31,14 +31,10 @@ export class PostStatusPresenter extends Presenter<PostStatusView>{
 
             setPost("");
             this.view.displayInfoMessage("Status posted!", 2000);
-        } catch (error) {
-            this.view.displayErrorMessage(
-                `Failed to post the status because of exception: ${error}`
-            );
-        } finally {
-            this.view.clearLastInfoMessage();
-            setIsLoading(false);
-        }
+        });
+        this.view.clearLastInfoMessage();
+        setIsLoading(false);
+
     }
 
 

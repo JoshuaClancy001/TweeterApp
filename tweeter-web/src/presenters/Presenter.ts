@@ -1,6 +1,3 @@
-import {AuthToken, User} from "tweeter-shared";
-import {UserItemView} from "./UserItemPresenter";
-import {PAGE_SIZE} from "./FolloweePresenter";
 
 export interface View {
     displayErrorMessage: (message: string) => void

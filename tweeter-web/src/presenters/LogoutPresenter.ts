@@ -16,16 +16,11 @@ export class LogoutPresenter extends Presenter<LogoutView>{
 
     public async logOut(authToken: AuthToken): Promise<void> {
         this.view.displayInfoMessage("Logging Out...", 0);
-
-        try {
+        this.doFailureReportingOperation("log user out", async () => {
             await this.userService.logout(authToken!);
 
             this.view.clearLastInfoMessage();
             this.view.clearUserInfo();
-        } catch (error) {
-            this.view.displayErrorMessage(
-                `Failed to log user out because of exception: ${error}`
-            );
-        }
+        });
     };
 }

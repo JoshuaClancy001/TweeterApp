@@ -6,7 +6,8 @@ import AuthenticationFormLayout from "../AuthenticationFormLayout";
 import useToastListener from "../../toaster/ToastListenerHook";
 import AuthenticationFields from "../AuthenticationFields";
 import useInfo from "../../userInfo/UserInfoHook";
-import {RegisterPresenter, RegisterView} from "../../../presenters/RegisterPresenter";
+import {RegisterPresenter} from "../../../presenters/RegisterPresenter";
+import {View} from "../../../presenters/Presenter";
 
 const Register = () => {
   const [firstName, setFirstName] = useState("");
@@ -104,7 +105,7 @@ const Register = () => {
     );
   };
 
-  const listener :RegisterView = {
+  const listener :View = {
     displayErrorMessage: displayErrorMessage
   }
 

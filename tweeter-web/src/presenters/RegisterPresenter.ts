@@ -1,22 +1,10 @@
-import {UserService} from "../model/service/UserService";
 import {NavigateFunction} from "react-router-dom";
 import {AuthToken, User} from "tweeter-shared";
 import {Buffer} from "buffer";
 import {View} from "./Presenter";
 import {AuthenticationPresenter} from "./AuthenticationPresenter";
-import {LoginView} from "./LoginPresenter";
 
-export interface RegisterView extends View{}
-
-export class RegisterPresenter extends AuthenticationPresenter<LoginView>{
-    private userService: UserService
-    private isLoading
-
-    constructor(view: RegisterView) {
-        super(view);
-        this.userService = new UserService();
-        this.isLoading = true;
-    }
+export class RegisterPresenter extends AuthenticationPresenter<View>{
 
     public async doRegister(isLoading: boolean, firstName: string, lastName: string, alias: string, password: string, imageBytes: Uint8Array, imageFileExtension: string, navigate: NavigateFunction, rememberMe: boolean, updateUserInfo: (currentUser: User, displayedUser: User | null, authToken: AuthToken, remember: boolean) => void){
         await this.doAuthentication(async () => {

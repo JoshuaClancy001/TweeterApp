@@ -6,7 +6,8 @@ import AuthenticationFields from "../AuthenticationFields";
 import AuthenticationFormLayout from "../AuthenticationFormLayout";
 import useToastListener from "../../toaster/ToastListenerHook";
 import useInfo from "../../userInfo/UserInfoHook";
-import {LoginPresenter, LoginView} from "../../../presenters/LoginPresenter";
+import {LoginPresenter} from "../../../presenters/LoginPresenter";
+import {View} from "../../../presenters/Presenter";
 
 interface Props {
   originalUrl?: string;
@@ -55,7 +56,7 @@ const Login = (props: Props) => {
   };
 
 
-  const listener: LoginView = {
+  const listener: View = {
     displayErrorMessage: displayErrorMessage
   }
 

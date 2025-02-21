@@ -9,7 +9,7 @@ export interface ItemView<T, U> extends View{
 }
 
 export abstract class ItemPresenter<T extends ItemView<T,U>, U, V> extends Presenter<T>{
-    private _service: V;
+    protected _service: V;
     private _hasMoreItems = true;
     private _lastItem: U | null = null;
 

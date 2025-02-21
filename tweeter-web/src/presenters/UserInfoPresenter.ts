@@ -83,8 +83,8 @@ export class UserInfoPresenter extends Presenter<UserInfoView> {
             );
 
             isFollower(false)
-            this.setNumbFollowees(authToken,displayedUser,followeeCount)
-            this.setNumbFollowers(authToken,displayedUser,followerCount)
+            await this.setNumbFollowees(authToken, displayedUser, followeeCount)
+            await this.setNumbFollowers(authToken, displayedUser, followerCount)
         });
 
             this.view.clearLastInfoMessage();

@@ -1,6 +1,6 @@
 import {UserService} from "../model/service/UserService";
 import {AuthToken} from "tweeter-shared";
-import {MessageView, Presenter, View} from "./Presenter";
+import {MessageView, Presenter} from "./Presenter";
 
 export interface LogoutView extends MessageView{
     clearUserInfo():void

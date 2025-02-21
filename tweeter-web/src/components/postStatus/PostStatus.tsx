@@ -1,6 +1,5 @@
 import "./PostStatus.css";
 import { useState } from "react";
-import { AuthToken, Status } from "tweeter-shared";
 import useToastListener from "../toaster/ToastListenerHook";
 import useInfo from "../userInfo/UserInfoHook";
 import {PostStatusPresenter} from "../../presenters/PostStatusPresenter";

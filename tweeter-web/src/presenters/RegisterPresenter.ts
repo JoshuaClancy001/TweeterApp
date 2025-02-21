@@ -2,7 +2,7 @@ import {UserService} from "../model/service/UserService";
 import {NavigateFunction} from "react-router-dom";
 import {AuthToken, User} from "tweeter-shared";
 import {Buffer} from "buffer";
-import {Presenter, View} from "./Presenter";
+import {View} from "./Presenter";
 import {AuthenticationPresenter} from "./AuthenticationPresenter";
 import {LoginView} from "./LoginPresenter";
 

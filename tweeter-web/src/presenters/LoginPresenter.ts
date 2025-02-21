@@ -1,7 +1,7 @@
 import {UserService} from "../model/service/UserService";
 import {NavigateFunction} from "react-router-dom";
 import {AuthToken, User} from "tweeter-shared";
-import {Presenter, View} from "./Presenter";
+import {View} from "./Presenter";
 import {AuthenticationPresenter} from "./AuthenticationPresenter";
 
 export interface LoginView extends View{}

@@ -1,18 +1,17 @@
 import {UserService} from "../model/service/UserService";
 import {NavigateFunction} from "react-router-dom";
 import {AuthToken, User} from "tweeter-shared";
+import {Buffer} from "buffer";
+import {Presenter, View} from "./Presenter";
 
-export interface RegisterView{
-    displayErrorMessage: (message: string) => void;
-}
+export interface RegisterView extends View{}
 
-export class RegisterPresenter {
+export class RegisterPresenter extends Presenter<RegisterView>{
     private userService: UserService
-    private view: RegisterView
     private isLoading
 
     constructor(view: RegisterView) {
-        this.view = view;
+        super(view);
         this.userService = new UserService();
         this.isLoading = true;
     }
@@ -57,5 +56,46 @@ export class RegisterPresenter {
         } finally {
             isLoading = false;
         }
+    };
+
+    public async handleImageFile(
+        file: File | undefined,
+        setImageUrl: (url: string) => void,
+        setImageBytes: (bytes: Uint8Array) => void,
+        setImageFileExtension: (extension: string) => void
+        ){
+        if (file) {
+            setImageUrl(URL.createObjectURL(file));
+
+            const reader = new FileReader();
+            reader.onload = (event: ProgressEvent<FileReader>) => {
+                const imageStringBase64 = event.target?.result as string;
+
+                // Remove unnecessary file metadata from the start of the string.
+                const imageStringBase64BufferContents =
+                    imageStringBase64.split("base64,")[1];
+
+                const bytes: Uint8Array = Buffer.from(
+                    imageStringBase64BufferContents,
+                    "base64"
+                );
+
+                setImageBytes(bytes);
+            };
+            reader.readAsDataURL(file);
+
+            // Set image file extension (and move to a separate method)
+            const fileExtension = this.getFileExtension(file);
+            if (fileExtension) {
+                setImageFileExtension(fileExtension);
+            }
+        } else {
+            setImageUrl("");
+            setImageBytes(new Uint8Array());
+        }
+    };
+
+    public getFileExtension = (file: File): string | undefined => {
+        return file.name.split(".").pop();
     };
 }

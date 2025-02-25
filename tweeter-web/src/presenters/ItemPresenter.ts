@@ -1,20 +1,21 @@
 import {Presenter, View} from "./Presenter";
 import {AuthToken} from "tweeter-shared";
+import ItemScroller from "../components/mainLayout/ItemScroller";
 
 
 export const PAGE_SIZE = 10;
 
-export interface ItemView<T, U> extends View{
+export interface ItemView<U> extends View{
     addItems: (newItems: U[]) => void
 }
 
-export abstract class ItemPresenter<T extends ItemView<T,U>, U, V> extends Presenter<T>{
+export abstract class ItemPresenter<U, V> extends Presenter<ItemView<U>>{
     protected _service: V;
     private _hasMoreItems = true;
     private _lastItem: U | null = null;
 
 
-    public constructor(view: T) {
+    public constructor(view: ItemView<U>) {
         super(view)
         this._service = this.createService();
     }
@@ -25,7 +26,7 @@ export abstract class ItemPresenter<T extends ItemView<T,U>, U, V> extends Prese
         return this._service;
     }
 
-    protected get view():T{
+    protected get view():ItemView<U>{
         return super.view
     }
 

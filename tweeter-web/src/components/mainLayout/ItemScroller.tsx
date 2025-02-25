@@ -4,12 +4,12 @@ import useToastListener from "../toaster/ToastListenerHook";
 import useInfo from "../userInfo/UserInfoHook";
 import { ItemPresenter, ItemView } from "../../presenters/ItemPresenter";
 
-interface Props<T, U, V extends ItemView<V, U>> {
-    presenterGenerator: (view: V) => ItemPresenter<V, U, T>;
+interface Props<U,T> {
+    presenterGenerator: (view: ItemView<U>) => ItemPresenter<U, T>;
     itemComponentGenerator: (item: U) => JSX.Element;
 }
 
-const ItemScroller = <T, U, V extends ItemView<V, U>>(props: Props<T, U, V>) => {
+const ItemScroller = <U, T>(props: Props<U, T>) => {
     const { displayErrorMessage } = useToastListener();
     const [items, setItems] = useState<U[]>([]);
     const [newItems, setNewItems] = useState<U[]>([]);
@@ -40,10 +40,10 @@ const ItemScroller = <T, U, V extends ItemView<V, U>>(props: Props<T, U, V>) => 
         presenter.reset();
     };
 
-    const listener: V = {
+    const listener: ItemView<U> = {
         addItems: (newItems: U[]) => setNewItems(newItems),
         displayErrorMessage: displayErrorMessage,
-    } as V;
+    } as ItemView<U>;
 
     const [presenter] = useState(props.presenterGenerator(listener));
 

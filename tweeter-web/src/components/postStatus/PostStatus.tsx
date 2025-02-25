@@ -16,6 +16,9 @@ const PostStatus = () => {
     displayErrorMessage: displayErrorMessage,
     displayInfoMessage: displayInfoMessage,
     clearLastInfoMessage: clearLastInfoMessage,
+    clearPost: () => {
+      setPost("");
+    }
   }
 
   const [presenter] = useState(new PostStatusPresenter(listener))

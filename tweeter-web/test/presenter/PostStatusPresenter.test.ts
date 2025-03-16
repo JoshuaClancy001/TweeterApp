@@ -8,9 +8,12 @@ describe("PostStatusPresenter", () => {
     let mockPostStatusView : PostStatusView;
     let postStatusPresenter : PostStatusPresenter;
     let mockStatusService : StatusService;
-    let currentUser = new User("a","b","c","d");
-    const authToken = new AuthToken("token", Date.now());
-    const status: Status = new Status("post", currentUser, Date.now());
+    const mockCurrentUser = mock(User);
+    const currentUser = instance(mockCurrentUser);
+    const mockAuthToken = mock(AuthToken);
+    const authToken = instance(mockAuthToken);
+    const mockStatus = mock(Status);
+    const status = instance(mockStatus);
 
     beforeEach(() => {
         mockPostStatusView = mock<PostStatusView>();
@@ -53,7 +56,6 @@ describe("PostStatusPresenter", () => {
         const setIsLoading = jest.fn();
         const setPost = jest.fn();
         await postStatusPresenter.submitPost(setIsLoading, "post", setPost, currentUser, authToken);
-        let [capturedErrorMessage] = capture(mockPostStatusView.displayErrorMessage).last();
         verify(mockPostStatusView.displayErrorMessage("Failed to post status because of exception: An error occurred")).once();
         verify(mockPostStatusView.clearLastInfoMessage()).once();
         verify(mockPostStatusView.clearPost()).never();

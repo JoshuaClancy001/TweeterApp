@@ -6,7 +6,8 @@ import {UserService} from "../../src/model/service/UserService";
 describe("AppNavbarPresenter", () => {
     let mockAppNavbarView : AppNavbarView;
     let appNavbarPresenter : AppNavbarPresenter;
-    const authToken = new AuthToken("token", Date.now());
+    let mockAuthToken = mock(AuthToken);
+    const authToken = instance(mockAuthToken);
     let mockUserService : UserService;
 
 

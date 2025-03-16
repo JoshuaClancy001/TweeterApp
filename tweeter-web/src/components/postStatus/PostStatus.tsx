@@ -4,7 +4,10 @@ import useToastListener from "../toaster/ToastListenerHook";
 import useInfo from "../userInfo/UserInfoHook";
 import {PostStatusPresenter} from "../../presenters/PostStatusPresenter";
 
-const PostStatus = () => {
+interface Props {
+  presenter?: PostStatusPresenter;
+}
+const PostStatus = (props:Props) => {
   const { displayErrorMessage, displayInfoMessage, clearLastInfoMessage } =
     useToastListener();
 
@@ -21,7 +24,7 @@ const PostStatus = () => {
     }
   }
 
-  const [presenter] = useState(new PostStatusPresenter(listener))
+  const [presenter] = useState(props.presenter ?? new PostStatusPresenter(listener))
 
   const submitPost = async (event: React.MouseEvent) => {
     event.preventDefault();
@@ -44,6 +47,7 @@ const PostStatus = () => {
           <textarea
             className="form-control"
             id="postStatusTextArea"
+            aria-label={"Post Field"}
             rows={10}
             placeholder="What's on your mind?"
             value={post}
@@ -57,6 +61,7 @@ const PostStatus = () => {
             id="postStatusButton"
             className="btn btn-md btn-primary me-1"
             type="button"
+            aria-label={"Post Status"}
             disabled={checkButtonStatus()}
             style={{ width: "8em" }}
             onClick={(event) => submitPost(event)}
@@ -75,6 +80,7 @@ const PostStatus = () => {
             id="clearStatusButton"
             className="btn btn-md btn-secondary"
             type="button"
+            aria-label={"Clear"}
             disabled={checkButtonStatus()}
             onClick={(event) => clearPost(event)}
           >

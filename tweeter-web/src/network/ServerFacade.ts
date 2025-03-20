@@ -2,7 +2,13 @@ import {
     UserItemRequest,
     UserItemResponse,
     User,
-    UserDto, StatusItemRequest, Status, StatusItemResponse, StatusDto,
+    UserDto,
+    StatusItemRequest,
+    Status,
+    StatusItemResponse,
+    StatusDto,
+    GetIsFollowerStatusRequest,
+    GetIsFollowerStatusResponse, GetCountRequest, GetCountResponse,
 } from "tweeter-shared";
 import { ClientCommunicator } from "./ClientCommunicator";
 
@@ -115,6 +121,57 @@ export class ServerFacade {
             } else {
                 return [items, response.hasMore];
             }
+        } else {
+            console.error(response);
+            throw new Error(response.message ?? "An unknown error occurred");
+        }
+    }
+
+
+    public async getIsFollowerStatus(
+        request: GetIsFollowerStatusRequest
+    ): Promise<boolean> {
+        const response = await this.clientCommunicator.doPost<
+            GetIsFollowerStatusRequest,
+            GetIsFollowerStatusResponse
+        >(request, "/follower/getIsFollowerStatus");
+
+        if (response.success) {
+            return response.isFollower;
+        } else {
+            console.error(response);
+            throw new Error(response.message ?? "An unknown error occurred");
+        }
+    }
+
+    public async getFollowerCount(
+        request: GetCountRequest
+    ): Promise<number> {
+        const response = await this.clientCommunicator.doPost<
+            GetCountRequest,
+            GetCountResponse
+        >(request, "/follower/count");
+
+        // Handle errors
+        if (response.success) {
+            return response.count;
+        } else {
+            console.error(response);
+            throw new Error(response.message ?? "An unknown error occurred");
+        }
+    }
+
+    public async getFolloweeCount(
+        request: GetCountRequest
+    ): Promise<number> {
+        const response = await this.clientCommunicator.doPost<
+            GetCountRequest,
+            GetCountResponse
+        >(request, "/followee/count");
+
+        // Handle errors
+        if (response.success) {
+            return response.count;
         } else {
             console.error(response);
             throw new Error(response.message ?? "An unknown error occurred");

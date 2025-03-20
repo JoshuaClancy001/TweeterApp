@@ -18,11 +18,15 @@ export type { StatusDto } from "./model/dto/StatusDto";
 export type { TweeterRequest } from "./model/net/request/TweeterRequest";
 export type { UserItemRequest } from "./model/net/request/UserItemRequest";
 export type { StatusItemRequest } from "./model/net/request/StatusItemRequest";
+export type { GetIsFollowerStatusRequest } from "./model/net/request/GetIsFollowerStatusRequest";
+export type { GetCountRequest } from "./model/net/request/GetCountRequest";
 
 //Response
 export type { TweeterResponse } from "./model/net/response/TweeterResponse";
 export type { UserItemResponse } from "./model/net/response/UserItemResponse";
 export type { StatusItemResponse } from "./model/net/response/StatusItemResponse";
+export type { GetIsFollowerStatusResponse } from "./model/net/response/GetIsFollowerStatusResponse";
+export type { GetCountResponse } from "./model/net/response/GetCountResponse";
 
 //Other
 export { FakeData } from "./util/FakeData";

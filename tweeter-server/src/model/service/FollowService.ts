@@ -25,6 +25,8 @@ export class FollowService {
         return [dtos, hasMore];
     }
 
+
+
     public async getIsFollowerStatus(
         authToken: AuthToken,
         user: User,

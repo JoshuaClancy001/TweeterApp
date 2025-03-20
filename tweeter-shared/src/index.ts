@@ -11,14 +11,18 @@ export { AuthToken } from "./model/domain/AuthToken";
 
 // DTO
 export type { UserDto } from "./model/dto/UserDto";
+export type { PostSegmentDto } from "./model/dto/PostSegmentDto";
+export type { StatusDto } from "./model/dto/StatusDto";
 
 //Request
 export type { TweeterRequest } from "./model/net/request/TweeterRequest";
 export type { UserItemRequest } from "./model/net/request/UserItemRequest";
+export type { StatusItemRequest } from "./model/net/request/StatusItemRequest";
 
 //Response
 export type { TweeterResponse } from "./model/net/response/TweeterResponse";
 export type { UserItemResponse } from "./model/net/response/UserItemResponse";
+export type { StatusItemResponse } from "./model/net/response/StatusItemResponse";
 
 //Other
 export { FakeData } from "./util/FakeData";

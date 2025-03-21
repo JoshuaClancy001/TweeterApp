@@ -8,12 +8,12 @@ import {
     StatusItemResponse,
     StatusDto,
     GetIsFollowerStatusRequest,
-    GetIsFollowerStatusResponse, GetCountRequest, GetCountResponse,
+    GetIsFollowerStatusResponse, GetCountRequest, GetCountResponse, FollowUnfollowRequest, FollowUnfollowResponse,
 } from "tweeter-shared";
 import { ClientCommunicator } from "./ClientCommunicator";
 
 export class ServerFacade {
-    private SERVER_URL = "https://6o8ihe0qej.execute-api.us-east-1.amazonaws.com/dev";
+    private SERVER_URL = "https://hbgm4gtog8.execute-api.us-east-1.amazonaws.com/dev";
 
     private clientCommunicator = new ClientCommunicator(this.SERVER_URL);
 
@@ -172,6 +172,40 @@ export class ServerFacade {
         // Handle errors
         if (response.success) {
             return response.count;
+        } else {
+            console.error(response);
+            throw new Error(response.message ?? "An unknown error occurred");
+        }
+    }
+
+    public async follow(
+        request: FollowUnfollowRequest
+    ): Promise<[number, number]> {
+        const response = await this.clientCommunicator.doPost<
+            FollowUnfollowRequest,
+            FollowUnfollowResponse
+        >(request, "/followState/follow");
+
+        // Handle errors
+        if (response.success) {
+            return [response.followerCount, response.followeeCount];
+        } else {
+            console.error(response);
+            throw new Error(response.message ?? "An unknown error occurred");
+        }
+    }
+
+    public async unfollow(
+        request: FollowUnfollowRequest
+    ): Promise<[number, number]> {
+        const response = await this.clientCommunicator.doPost<
+            FollowUnfollowRequest,
+            FollowUnfollowResponse
+        >(request, "/followState/unfollow");
+
+        // Handle errors
+        if (response.success) {
+            return [response.followerCount, response.followeeCount];
         } else {
             console.error(response);
             throw new Error(response.message ?? "An unknown error occurred");

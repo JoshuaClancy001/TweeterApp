@@ -20,6 +20,7 @@ export type { UserItemRequest } from "./model/net/request/UserItemRequest";
 export type { StatusItemRequest } from "./model/net/request/StatusItemRequest";
 export type { GetIsFollowerStatusRequest } from "./model/net/request/GetIsFollowerStatusRequest";
 export type { GetCountRequest } from "./model/net/request/GetCountRequest";
+export type { FollowUnfollowRequest } from "./model/net/request/FollowUnfollowRequest";
 
 //Response
 export type { TweeterResponse } from "./model/net/response/TweeterResponse";
@@ -27,6 +28,7 @@ export type { UserItemResponse } from "./model/net/response/UserItemResponse";
 export type { StatusItemResponse } from "./model/net/response/StatusItemResponse";
 export type { GetIsFollowerStatusResponse } from "./model/net/response/GetIsFollowerStatusResponse";
 export type { GetCountResponse } from "./model/net/response/GetCountResponse";
+export type { FollowUnfollowResponse } from "./model/net/response/FollowUnfollowResponse";
 
 //Other
 export { FakeData } from "./util/FakeData";

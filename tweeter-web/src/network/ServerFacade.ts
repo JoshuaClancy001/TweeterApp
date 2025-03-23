@@ -8,7 +8,19 @@ import {
     StatusItemResponse,
     StatusDto,
     GetIsFollowerStatusRequest,
-    GetIsFollowerStatusResponse, GetCountRequest, GetCountResponse, FollowUnfollowRequest, FollowUnfollowResponse,
+    GetIsFollowerStatusResponse,
+    GetCountRequest,
+    GetCountResponse,
+    FollowUnfollowRequest,
+    FollowUnfollowResponse,
+    PostStatusRequest,
+    TweeterResponse,
+    LoginRequest,
+    AuthResponse,
+    AuthToken,
+    RegisterRequest,
+    GetUserRequest,
+    TweeterRequest, GetUserResponse,
 } from "tweeter-shared";
 import { ClientCommunicator } from "./ClientCommunicator";
 
@@ -211,5 +223,84 @@ export class ServerFacade {
             throw new Error(response.message ?? "An unknown error occurred");
         }
     }
+
+    public async postStatus(
+        request: PostStatusRequest,
+    ): Promise<void> {
+        const response = await this.clientCommunicator.doPost<
+            PostStatusRequest,
+            TweeterResponse
+        >(request, "/postStatus");
+
+        if (!response.success) {
+            console.error(response);
+            throw new Error(response.message ?? "An unknown error occurred");
+        }
+    }
+
+    public async login(
+        request: LoginRequest,
+    ): Promise<[User, AuthToken]> {
+        const response = await this.clientCommunicator.doPost<
+            LoginRequest,
+            AuthResponse
+        >(request, "/authentication/login");
+
+        if (response.success) {
+            return [User.fromDto(response.user)!, AuthToken.fromDto(response.authToken)!];
+        } else {
+            console.error(response);
+            throw new Error(response.message ?? "An unknown error occurred");
+        }
+    }
+
+    public async register(
+        request: RegisterRequest,
+    ): Promise<[User, AuthToken]> {
+        const response = await this.clientCommunicator.doPost<
+            RegisterRequest,
+            AuthResponse
+        >(request, "/authentication/register");
+
+        if (response.success) {
+            return [User.fromDto(response.user)!, AuthToken.fromDto(response.authToken)!];
+        } else {
+            console.error(response);
+            throw new Error(response.message ?? "An unknown error occurred");
+        }
+    }
+
+    public async getUser(
+        request: GetUserRequest,
+    ): Promise<User | null> {
+        const response = await this.clientCommunicator.doPost<
+            GetUserRequest,
+            GetUserResponse
+        >(request, "/authentication/getUser");
+
+        if (response.success) {
+            let user: User | null = User.fromDto(response.user)!;
+            return user
+        } else {
+            console.error(response);
+            throw new Error(response.message ?? "An unknown error occurred");
+        }
+    }
+
+    public async logout(
+        request: TweeterRequest,
+    ): Promise<void> {
+        const response = await this.clientCommunicator.doPost<
+            TweeterRequest,
+            TweeterResponse
+        >(request, "/authentication/logout");
+
+        if (!response.success) {
+            console.error(response);
+            throw new Error(response.message ?? "An unknown error occurred");
+        }
+    }
+
+
 
 }

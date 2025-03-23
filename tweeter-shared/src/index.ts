@@ -21,6 +21,10 @@ export type { StatusItemRequest } from "./model/net/request/StatusItemRequest";
 export type { GetIsFollowerStatusRequest } from "./model/net/request/GetIsFollowerStatusRequest";
 export type { GetCountRequest } from "./model/net/request/GetCountRequest";
 export type { FollowUnfollowRequest } from "./model/net/request/FollowUnfollowRequest";
+export type { PostStatusRequest } from "./model/net/request/PostStatusRequest";
+export type { LoginRequest } from "./model/net/request/LoginRequest";
+export type { RegisterRequest } from "./model/net/request/RegisterRequest";
+export type { GetUserRequest } from "./model/net/request/GetUserRequest";
 
 //Response
 export type { TweeterResponse } from "./model/net/response/TweeterResponse";
@@ -29,6 +33,9 @@ export type { StatusItemResponse } from "./model/net/response/StatusItemResponse
 export type { GetIsFollowerStatusResponse } from "./model/net/response/GetIsFollowerStatusResponse";
 export type { GetCountResponse } from "./model/net/response/GetCountResponse";
 export type { FollowUnfollowResponse } from "./model/net/response/FollowUnfollowResponse";
+export type { AuthResponse } from "./model/net/response/AuthResponse";
+export type { GetUserResponse } from "./model/net/response/GetUserResponse";
+
 
 //Other
 export { FakeData } from "./util/FakeData";

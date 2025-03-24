@@ -201,7 +201,7 @@ export class ServerFacade {
     public async getUser(
         request: GetUserRequest,
     ): Promise<User | null> {
-        return this.sendRequest<GetUserRequest, GetUserResponse, User | null>(
+        return await this.sendRequest<GetUserRequest, GetUserResponse, User | null>(
             request,
             "/authentication/getUser",
             (response) => response.user ? User.fromDto(response.user) : null

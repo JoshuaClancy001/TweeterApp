@@ -51,7 +51,7 @@ export class UserService {
         token: string,
         alias: string
     ): Promise<UserDto | null> => {
-        let user: User = FakeData.instance.findUserByAlias(alias);
+        let user: User = await FakeData.instance.findUserByAlias(alias);
         return user?.dto || null;
     };
 

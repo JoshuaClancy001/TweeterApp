@@ -11,7 +11,7 @@ export class UserService {
             password: password
         }
 
-        return this.serverFAcade.login(request);
+        return await this.serverFAcade.login(request);
     };
 
     public async register(
@@ -30,7 +30,7 @@ export class UserService {
             userImageBytes: userImageBytes,
             imageFileExtension: imageFileExtension
         }
-        return this.serverFAcade.register(request);
+        return await this.serverFAcade.register(request);
     };
 
     public getUser = async (
@@ -41,7 +41,7 @@ export class UserService {
             token: authToken.token,
             alias: alias
         }
-        return this.serverFAcade.getUser(request);
+        return await this.serverFAcade.getUser(request);
     };
 
     public async  logout(authToken: AuthToken): Promise<void>{

@@ -26,15 +26,17 @@ export class UserInfoPresenter extends Presenter<UserInfoView> {
         });
     };
 
-    public async setNumbFollowees(authToken: AuthToken, displayedUser: User , followeeCount: number){
+    public async setNumbFollowees(authToken: AuthToken, displayedUser: User , followeeCount: number, setFolloweeCount: (number: number) => void) {
         this.doFailureReportingOperation("get followees count", async () => {
             followeeCount = await this.followService.getFolloweeCount(authToken, displayedUser);
+            setFolloweeCount(followeeCount);
         });
     };
 
-    public async setNumbFollowers (authToken: AuthToken, displayedUser: User, followerCount: number) {
+    public async setNumbFollowers (authToken: AuthToken, displayedUser: User, followerCount: number, setFollowerCount: (number: number) => void) {
         this.doFailureReportingOperation("get followers count", async () => {
             followerCount = await this.followService.getFollowerCount(authToken, displayedUser);
+            setFollowerCount(followerCount);
 
         });
     };
@@ -69,7 +71,9 @@ export class UserInfoPresenter extends Presenter<UserInfoView> {
         authToken: AuthToken,
         isLoading: (boolean: boolean) => void,
         displayedUser: User,
-        isFollower: (boolean: boolean) => void,) {
+        isFollower: (boolean: boolean) => void,
+        setFolloweeCount: (number: number) => void,
+        setFollowerCount: (number: number) => void){
         this.doFailureReportingOperation("unfollow user", async () => {
             isLoading(true);
             this.view.displayInfoMessage(
@@ -83,8 +87,8 @@ export class UserInfoPresenter extends Presenter<UserInfoView> {
             );
 
             isFollower(false)
-            await this.setNumbFollowees(authToken, displayedUser, followeeCount)
-            await this.setNumbFollowers(authToken, displayedUser, followerCount)
+            await this.setNumbFollowees(authToken, displayedUser, followeeCount, setFolloweeCount)
+            await this.setNumbFollowers(authToken, displayedUser, followerCount,setFollowerCount)
         });
 
             this.view.clearLastInfoMessage();

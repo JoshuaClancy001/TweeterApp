@@ -44,11 +44,11 @@ const UserInfo = () => {
   }
 
   const setNumbFollowees = async (authToken: AuthToken,currentUser:User) => {
-    await presenter.setNumbFollowees(authToken, displayedUser!, followeeCount)
+    await presenter.setNumbFollowees(authToken, displayedUser!, followeeCount, setFolloweeCount)
   }
 
   const setNumbFollowers = async (authToken: AuthToken, currentUser: User) => {
-    await presenter.setNumbFollowers(authToken!, displayedUser!, followerCount)
+    await presenter.setNumbFollowers(authToken!, displayedUser!, followerCount, setFollowerCount)
   }
 
   const switchToLoggedInUser = async (event: React.MouseEvent) => {
@@ -67,7 +67,7 @@ const UserInfo = () => {
     event: React.MouseEvent
   ): Promise<void> => {
     event.preventDefault();
-    await presenter.unfollowDisplayedUser(authToken!, setIsLoading, displayedUser!, setIsFollower)
+    await presenter.unfollowDisplayedUser(authToken!, setIsLoading, displayedUser!, setIsFollower, setFolloweeCount, setFollowerCount)
   };
   return (
     <div className={isLoading ? "loading" : ""}>

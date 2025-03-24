@@ -4,14 +4,22 @@ import {AuthTokenDto} from "tweeter-shared/dist/model/dto/AuthTokenDto";
 
 export class UserService {
 
+    private generateUserDto = (): UserDto => {
+        const user = FakeData.instance.firstUser;
+        if (user === null) {
+            throw new Error("Invalid user");
+        }
+        return user.dto;
+    }
+
     public async login (alias: string, password: string): Promise<[UserDto, AuthTokenDto]>{
         // TODO: Replace with the result of calling the server
-        const user = FakeData.instance.firstUser;
-
-        if (user === null) {
-            throw new Error("Invalid alias or password");
-        }
-        let userDto = user.dto;
+        // const user = FakeData.instance.firstUser;
+        //
+        // if (user === null) {
+        //     throw new Error("Invalid alias or password");
+        // }
+        let userDto = this.generateUserDto()
 
         return [userDto, FakeData.instance.authToken.dto];
     };
@@ -28,14 +36,15 @@ export class UserService {
         const imageStringBase64: string =
             Buffer.from(userImageBytes).toString("base64");
 
-        // TODO: Replace with the result of calling the server
-        const user = FakeData.instance.firstUser;
+        // // TODO: Replace with the result of calling the server
+        // const user = FakeData.instance.firstUser;
+        //
+        // if (user === null) {
+        //     throw new Error("Invalid registration");
+        // }
+        let userDto = this.generateUserDto()
 
-        if (user === null) {
-            throw new Error("Invalid registration");
-        }
-
-        return [user.dto, FakeData.instance.authToken.dto];
+        return [userDto, FakeData.instance.authToken.dto];
     };
 
     public getUser = async (

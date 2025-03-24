@@ -29,165 +29,107 @@ export class ServerFacade {
 
     private clientCommunicator = new ClientCommunicator(this.SERVER_URL);
 
-    public async getMoreFollowees(
-        request: UserItemRequest
-    ): Promise<[User[], boolean]> {
-        const response = await this.clientCommunicator.doPost<
-            UserItemRequest,
-            UserItemResponse
-        >(request, "/followee/list");
+    private async sendRequest<Req, Res extends TweeterResponse, T>(
+        request: Req,
+        endpoint: string,
+        transform: (response: Res) => T
+    ): Promise<T> {
+        const response = await this.clientCommunicator.doPost<Req , Res>(request, endpoint);
 
-        // Convert the UserDto array returned by ClientCommunicator to a User array
-        const items: User[] | null =
-            response.success && response.items
-                ? response.items.map((dto: UserDto) => User.fromDto(dto) as User)
-                : null;
-
-        // Handle errors
         if (response.success) {
-            if (items == null) {
-                throw new Error(`No followees found`);
-            } else {
-                return [items, response.hasMore];
-            }
+            return transform(response);
         } else {
             console.error(response);
             throw new Error(response.message ?? "An unknown error occurred");
         }
+    }
+
+    private async getMoreItems<T, Req, Res extends UserItemResponse | StatusItemResponse>(
+        request: Req,
+        endpoint: string,
+        fromDto: (dto: any) => T
+    ): Promise<[T[], boolean]> {
+        return this.sendRequest<Req, Res, [T[], boolean]>(
+            request,
+            endpoint,
+            (response) => [
+                response.items
+                    ? response.items.map(fromDto).filter((item): item is T => item !== null)
+                    : [],
+                response.hasMore,
+            ]
+        );
+    }
+
+    public async getMoreFollowees(request: UserItemRequest): Promise<[User[], boolean]> {
+        return this.getMoreItems<User, UserItemRequest, UserItemResponse>(
+            request,
+            "/followee/list",
+            (dto) => User.fromDto(dto) as User
+        );
     }
 
 
     public async getMoreFollowers(
         request: UserItemRequest
     ): Promise<[User[], boolean]> {
-        const response = await this.clientCommunicator.doPost<
-            UserItemRequest,
-            UserItemResponse
-        >(request, "/follower/list");
-
-        // Convert the UserDto array returned by ClientCommunicator to a User array
-        const items: User[] | null =
-            response.success && response.items
-                ? response.items.map((dto: UserDto) => User.fromDto(dto) as User)
-                : null;
-
-        // Handle errors
-        if (response.success) {
-            if (items == null) {
-                throw new Error(`No followees found`);
-            } else {
-                return [items, response.hasMore];
-            }
-        } else {
-            console.error(response);
-            throw new Error(response.message ?? "An unknown error occurred");
-        }
+        return this.getMoreItems<User, UserItemRequest, UserItemResponse>(
+            request,
+            "/follower/list",
+            (dto) => User.fromDto(dto) as User
+        );
     }
 
 
     public async getMoreFeedItems(
         request: StatusItemRequest
     ): Promise<[Status[], boolean]> {
-        const response = await this.clientCommunicator.doPost<
-            StatusItemRequest,
-            StatusItemResponse
-        >(request, "/feed/list");
-
-        // Convert the UserDto array returned by ClientCommunicator to a User array
-        const items: Status[] | null =
-            response.success && response.items
-                ? response.items.map((dto: StatusDto) => Status.fromDto(dto) as Status)
-                : null;
-
-        // Handle errors
-        if (response.success) {
-            if (items == null) {
-                throw new Error(`No feed found`);
-            } else {
-                return [items, response.hasMore];
-            }
-        } else {
-            console.error(response);
-            throw new Error(response.message ?? "An unknown error occurred");
-        }
+        return this.getMoreItems<Status, StatusItemRequest, StatusItemResponse>(
+            request,
+            "/feed/list",
+            (dto) => Status.fromDto(dto) as Status
+        );
     }
 
     public async getMoreStoryItems(
         request: StatusItemRequest
     ): Promise<[Status[], boolean]> {
-        const response = await this.clientCommunicator.doPost<
-            StatusItemRequest,
-            StatusItemResponse
-        >(request, "/story/list");
-
-        // Convert the UserDto array returned by ClientCommunicator to a User array
-        const items: Status[] | null =
-            response.success && response.items
-                ? response.items.map((dto: StatusDto) => Status.fromDto(dto) as Status)
-                : null;
-
-        // Handle errors
-        if (response.success) {
-            if (items == null) {
-                throw new Error(`No story found`);
-            } else {
-                return [items, response.hasMore];
-            }
-        } else {
-            console.error(response);
-            throw new Error(response.message ?? "An unknown error occurred");
-        }
+        return this.getMoreItems<Status, StatusItemRequest, StatusItemResponse>(
+            request,
+            "/story/list",
+            (dto) => Status.fromDto(dto) as Status
+        );
     }
 
 
     public async getIsFollowerStatus(
         request: GetIsFollowerStatusRequest
     ): Promise<boolean> {
-        const response = await this.clientCommunicator.doPost<
-            GetIsFollowerStatusRequest,
-            GetIsFollowerStatusResponse
-        >(request, "/follower/getIsFollowerStatus");
-
-        if (response.success) {
-            return response.isFollower;
-        } else {
-            console.error(response);
-            throw new Error(response.message ?? "An unknown error occurred");
-        }
+        return this.sendRequest<GetIsFollowerStatusRequest, GetIsFollowerStatusResponse, boolean>(
+            request,
+            "/follower/getIsFollowerStatus",
+            (response) => response.isFollower
+        );
     }
 
     public async getFollowerCount(
         request: GetCountRequest
     ): Promise<number> {
-        const response = await this.clientCommunicator.doPost<
-            GetCountRequest,
-            GetCountResponse
-        >(request, "/follower/count");
-
-        // Handle errors
-        if (response.success) {
-            return response.count;
-        } else {
-            console.error(response);
-            throw new Error(response.message ?? "An unknown error occurred");
-        }
+        return this.sendRequest<GetCountRequest, GetCountResponse, number>(
+            request,
+            "/follower/count",
+            (response) => response.count
+        );
     }
 
     public async getFolloweeCount(
         request: GetCountRequest
     ): Promise<number> {
-        const response = await this.clientCommunicator.doPost<
-            GetCountRequest,
-            GetCountResponse
-        >(request, "/followee/count");
-
-        // Handle errors
-        if (response.success) {
-            return response.count;
-        } else {
-            console.error(response);
-            throw new Error(response.message ?? "An unknown error occurred");
-        }
+        return this.sendRequest<GetCountRequest, GetCountResponse, number>(
+            request,
+            "/followee/count",
+            (response) => response.count
+        );
     }
 
     public async follow(
@@ -227,78 +169,53 @@ export class ServerFacade {
     public async postStatus(
         request: PostStatusRequest,
     ): Promise<void> {
-        const response = await this.clientCommunicator.doPost<
-            PostStatusRequest,
-            TweeterResponse
-        >(request, "/postStatus");
-
-        if (!response.success) {
-            console.error(response);
-            throw new Error(response.message ?? "An unknown error occurred");
-        }
+        return this.sendRequest<PostStatusRequest, TweeterResponse, void>(
+            request,
+            "/postStatus",
+            () => undefined
+        );
     }
 
     public async login(
         request: LoginRequest,
     ): Promise<[User, AuthToken]> {
-        const response = await this.clientCommunicator.doPost<
-            LoginRequest,
-            AuthResponse
-        >(request, "/authentication/login");
-
-        if (response.success) {
-            return [User.fromDto(response.user)!, AuthToken.fromDto(response.authToken)!];
-        } else {
-            console.error(response);
-            throw new Error(response.message ?? "An unknown error occurred");
-        }
+        return this.sendRequest<LoginRequest, AuthResponse, [User, AuthToken]>(
+            request,
+            "/authentication/login",
+            (response) => [User.fromDto(response.user)!, AuthToken.fromDto(response.authToken
+            )!]
+        );
     }
 
     public async register(
         request: RegisterRequest,
     ): Promise<[User, AuthToken]> {
-        const response = await this.clientCommunicator.doPost<
-            RegisterRequest,
-            AuthResponse
-        >(request, "/authentication/register");
-
-        if (response.success) {
-            return [User.fromDto(response.user)!, AuthToken.fromDto(response.authToken)!];
-        } else {
-            console.error(response);
-            throw new Error(response.message ?? "An unknown error occurred");
-        }
+        return await this.sendRequest<RegisterRequest, AuthResponse, [User, AuthToken]>(
+            request,
+            "/authentication/register",
+            (response) => [User.fromDto(response.user)!, AuthToken.fromDto(response.authToken
+            )!]
+        );
     }
 
     public async getUser(
         request: GetUserRequest,
     ): Promise<User | null> {
-        const response = await this.clientCommunicator.doPost<
-            GetUserRequest,
-            GetUserResponse
-        >(request, "/authentication/getUser");
-
-        if (response.success) {
-            let user: User | null = User.fromDto(response.user)!;
-            return user
-        } else {
-            console.error(response);
-            throw new Error(response.message ?? "An unknown error occurred");
-        }
+        return this.sendRequest<GetUserRequest, GetUserResponse, User | null>(
+            request,
+            "/authentication/getUser",
+            (response) => response.user ? User.fromDto(response.user) : null
+        );
     }
 
     public async logout(
         request: TweeterRequest,
     ): Promise<void> {
-        const response = await this.clientCommunicator.doPost<
-            TweeterRequest,
-            TweeterResponse
-        >(request, "/authentication/logout");
-
-        if (!response.success) {
-            console.error(response);
-            throw new Error(response.message ?? "An unknown error occurred");
-        }
+        return this.sendRequest<TweeterRequest, TweeterResponse, void>(
+            request,
+            "/authentication/logout",
+            () => undefined
+        );
     }
 
 

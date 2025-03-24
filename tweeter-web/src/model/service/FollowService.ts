@@ -10,6 +10,7 @@ import {ServerFacade} from "../../network/ServerFacade";
 
 export class FollowService {
     private serverFacade: ServerFacade = new ServerFacade();
+
     public async loadMoreFollowers (
         authToken: AuthToken,
         userAlias: string,

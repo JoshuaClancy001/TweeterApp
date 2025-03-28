@@ -36,7 +36,7 @@ const UserInfo = () => {
     clearLastInfoMessage: clearLastInfoMessage,
   }
 
-  const [presenter] = useState(new UserInfoPresenter(listener))
+  const [ presenter] = useState(new UserInfoPresenter(listener))
 
 
   const setIsFollowerStatus = async (authToken: AuthToken,currentUser:User,displayedUser:User )=>{

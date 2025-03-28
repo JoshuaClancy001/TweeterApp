@@ -13,6 +13,7 @@ export { AuthToken } from "./model/domain/AuthToken";
 export type { UserDto } from "./model/dto/UserDto";
 export type { PostSegmentDto } from "./model/dto/PostSegmentDto";
 export type { StatusDto } from "./model/dto/StatusDto";
+export type { AuthTokenDto } from "./model/dto/AuthTokenDto";
 
 //Request
 export type { TweeterRequest } from "./model/net/request/TweeterRequest";

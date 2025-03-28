@@ -35,7 +35,7 @@ const Login = (props: Props) => {
   };
 
   const doLogin = async () => {
-    presenter.doLogin(isLoading,alias, password, navigate, props.originalUrl, rememberMe, updateUserInfo)
+    await presenter.doLogin(isLoading,alias, password, navigate, props.originalUrl, rememberMe, updateUserInfo)
   }
 
   const inputFieldGenerator = () => {

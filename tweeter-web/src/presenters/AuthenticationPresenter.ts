@@ -23,6 +23,9 @@ export abstract class AuthenticationPresenter<T extends View> extends Presenter<
 
             const [user, authToken] = await serviceCall();
 
+            if (user === null) {
+                throw new Error("User not found");
+            }
             updateUserInfo(user, user, authToken, rememberMe);
 
             doTheNavigating();

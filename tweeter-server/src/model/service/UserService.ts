@@ -1,8 +1,15 @@
-import {AuthToken, FakeData, User, UserDto} from "tweeter-shared";
+import {AuthToken, FakeData, User, UserDto, AuthTokenDto} from "tweeter-shared";
 import {Buffer} from "buffer";
-import {AuthTokenDto} from "tweeter-shared/dist/model/dto/AuthTokenDto";
+import {UserDynamoDao} from "../../Dao/UserDao/UserDynamoDao";
+import {UserDao} from "../../Dao/UserDao/UserDao";
+import {AuthDao} from "../../Dao/AuthDao/AuthDao";
+import {AuthDynamoDao} from "../../Dao/AuthDao/AuthDynamoDao";
+import {randomBytes} from "crypto";
+import bcrypt from 'bcryptjs';
 
 export class UserService {
+    private UserDao: UserDao = new UserDynamoDao();
+    private AuthDao: AuthDao = new AuthDynamoDao();
 
     private generateUserDto = (): UserDto => {
         const user = FakeData.instance.firstUser;
@@ -13,15 +20,18 @@ export class UserService {
     }
 
     public async login (alias: string, password: string): Promise<[UserDto, AuthTokenDto]>{
-        // TODO: Replace with the result of calling the server
-        // const user = FakeData.instance.firstUser;
-        //
-        // if (user === null) {
-        //     throw new Error("Invalid alias or password");
-        // }
-        let userDto = this.generateUserDto()
 
-        return [userDto, FakeData.instance.authToken.dto];
+        let [userDto, hashedPassword] = await this.UserDao.read(alias, password)
+
+        if (!bcrypt.compareSync(password, hashedPassword) || !userDto) {
+            throw new Error("[Bad Request] Invalid Username or Password1");
+        }
+
+        let authString = randomBytes(16).toString('hex')
+        let authTokenDto: AuthTokenDto = {token: authString, timestamp: Date.now()}
+        await this.AuthDao.createAuth(authTokenDto, alias)
+
+        return [userDto, authTokenDto];
     };
 
     public async register(
@@ -36,15 +46,22 @@ export class UserService {
         const imageStringBase64: string =
             Buffer.from(userImageBytes).toString("base64");
 
-        // // TODO: Replace with the result of calling the server
-        // const user = FakeData.instance.firstUser;
-        //
-        // if (user === null) {
-        //     throw new Error("Invalid registration");
-        // }
-        let userDto = this.generateUserDto()
+        let userDto = {
+            firstName: firstName,
+            lastName: lastName,
+            alias: alias,
+            imageUrl: imageStringBase64
+        }
 
-        return [userDto, FakeData.instance.authToken.dto];
+        const salt = bcrypt.genSaltSync(10);
+        const hashedPassword = bcrypt.hashSync(password, salt);
+        await this.UserDao.createUser(userDto, hashedPassword)
+
+        let authString = randomBytes(16).toString('hex')
+        let authTokenDto: AuthTokenDto = {token: authString, timestamp: Date.now()}
+        await this.AuthDao.createAuth(authTokenDto, alias)
+
+        return [userDto, authTokenDto];
     };
 
     public getUser = async (
